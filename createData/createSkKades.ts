@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 import arrayElement from "../utils/arrayElement";
 import { faker } from "@faker-js/faker";
-import sleep from "../utils/sleep";
 
 const URL = "http://localhost/sid/index.php/dokumen_sekretariat/form/2";
 
@@ -54,6 +53,6 @@ export default async function createSkKades(page: Page) {
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: "networkidle0" }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
   ]);
 }

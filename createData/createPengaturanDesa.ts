@@ -60,6 +60,6 @@ export default async function createPengaturanDesa(page: Page) {
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: "networkidle0" }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
   ]);
 }

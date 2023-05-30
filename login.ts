@@ -1,7 +1,7 @@
 import { Page } from "puppeteer";
 
 export default async function login(page: Page) {
-  await page.goto("http://localhost/sid/index.php/siteman");
+  await page.goto("http://localhost/sidisa/index.php/siteman");
 
   // username
   await page.waitForSelector("input[name='username']");
@@ -12,7 +12,7 @@ export default async function login(page: Page) {
 
   // submit and navigate
   await Promise.all([
-    page.click("button[type='submit']"),
+    page.click("button"),
     page.waitForNavigation({ waitUntil: "networkidle0" }),
   ]);
 }

@@ -7,13 +7,16 @@ import createPenduduk from "./createData/createPenduduk";
 import * as dotenv from "dotenv";
 import createPengaturanDesa from "./createData/createPengaturanDesa";
 import createSkKades from "./createData/createSkKades";
+import createArticle from "./createData/createArticle";
+import createPembangunan from "./createData/createPembangunan";
 
 dotenv.config();
 
-const PENDUDUK_COUNT = 100;
+const PENDUDUK_COUNT = 1000;
 const DUSUN_COUNT = 4;
 const PENGATURAN_DESA_COUNT = 100;
-const SK_KADES = 50;
+const SK_KADES_COUNT = 50;
+const PEMBANGUNAN_COUNT = 2000;
 let counter;
 
 const { waitTimeout } = process.env;
@@ -21,8 +24,8 @@ invariant(waitTimeout, "waitTimeout Cannot be Null");
 
 async function main() {
   const browser = await puppeteer.launch({
-    headless: false,
-    // headless: "new",
+    // headless: false,
+    headless: "new",
     // devtools: true,
 
     defaultViewport: null,
@@ -33,12 +36,12 @@ async function main() {
 
   await login(page);
 
-  const filePath = path.join(process.cwd(), "screenshot");
-  const fileName = `${new Date().getTime()}.png`;
+  // const filePath = path.join(process.cwd(), "screenshot");
+  // const fileName = `${new Date().getTime()}.png`;
 
-  if (!fs.existsSync(filePath)) {
-    fs.mkdirSync(filePath, { recursive: true });
-  }
+  // if (!fs.existsSync(filePath)) {
+  //   fs.mkdirSync(filePath, { recursive: true });
+  // }
 
   // counter = 0;
   // while (counter !== PENDUDUK_COUNT) {
@@ -80,16 +83,31 @@ async function main() {
   //   } catch (error) {}
   // }
 
-  counter = 0;
-  while (counter !== SK_KADES) {
-    try {
-      console.log(`Creating SK KADES Number: ${counter}`);
+  // counter = 0;
+  // while (counter !== SK_KADES) {
+  //   try {
+  //     console.log(`Creating SK KADES Number: ${counter}`);
 
-      await createSkKades(page);
+  //     await createSkKades(page);
+  //     counter++;
+  //   } catch (error) {}
+  // }
+
+  // await createPenduduk(page);
+
+  // await createArticle(page);
+
+  counter = 0;
+  while (counter !== PEMBANGUNAN_COUNT) {
+    try {
+      console.log(`Creating Pembangunan Number: ${counter}`);
+
+      await createPembangunan(page);
       counter++;
     } catch (error) {}
   }
 
+  await createPembangunan(page);
   await browser.close();
 }
 

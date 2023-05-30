@@ -1,17 +1,30 @@
 import generateNik from "../utils/generateNik";
-// import sleep from "../utils/sleep";
+import path from "path";
+import fs from "fs";
 import invariant from "tiny-invariant";
 import { faker } from "@faker-js/faker";
 import { Page } from "puppeteer";
 
 import { PendingXHR } from "pending-xhr-puppeteer";
+import arrayElement from "../utils/arrayElement";
+
+const URL = "http://localhost/sidisa/index.php/penduduk/form_peristiwa/5";
 
 export default async function createPenduduk(page: Page) {
-  await page.goto("http://localhost/sid/index.php/penduduk/form_peristiwa/5");
+  const personFolder = path.join(process.cwd(), "assets", "person");
 
-  const { waitTimeout } = process.env;
+  const listImg = fs
+    .readdirSync(personFolder)
+    .filter((file) => new RegExp(".(jpe?g|png)$$", "gi").exec(file));
 
-  invariant(waitTimeout, "");
+  const randomPdfPath = path.join(personFolder, arrayElement(listImg));
+
+  await page.goto(URL);
+
+  // FOTO
+  // upload document
+  const elementHandle = await page.$('input[type="file"][name="foto"]');
+  await elementHandle?.uploadFile(randomPdfPath);
 
   // nik
   await page.waitForSelector("input[name='nik']");
@@ -161,8 +174,6 @@ export default async function createPenduduk(page: Page) {
           option.textContent !== "-" && option.textContent !== "Pilih RT "
       );
 
-      console.log({ elements, options });
-
       function arrayElement<T>(element: T[]) {
         return element[Math.floor(Math.random() * element.length)];
       }
@@ -203,6 +214,6 @@ export default async function createPenduduk(page: Page) {
   // SUBMIT
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: "networkidle0" }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
   ]);
 }
