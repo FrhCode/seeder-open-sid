@@ -3,22 +3,44 @@ import fs from "fs";
 import path from "path";
 import arrayElement from "../utils/arrayElement";
 import { faker } from "@faker-js/faker";
+import writeErrorLog from "../utils/writeErrorLog";
 
-const URL = "http://localhost/sid/index.php/dokumen_sekretariat/form/3";
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
 
-export default async function createPengaturanDesa(page: Page) {
+const URL = `${process.env.APP_URL}/index.php/dokumen_sekretariat/form/3`;
+
+export default async function createPengaturanDesa(page: Page, count: number) {
   const pdfFolder = path.join(process.cwd(), "assets", "pdf");
 
   const listPdf = fs
     .readdirSync(pdfFolder)
     .filter((file) => new RegExp(".*.pdf$", "gi").exec(file));
 
-  const randomPdfPath = path.join(pdfFolder, arrayElement(listPdf));
+  for (let index = 0; index < count; index++) {
+    console.log(`Creating Pengatura Desa ${index + 1} of ${count}`);
+    const randomPdfPath = path.join(pdfFolder, arrayElement(listPdf));
 
+    try {
+      await fillCreatePengaturanDesa(page, randomPdfPath);
+    } catch (error: any) {
+      index--;
+
+      await writeErrorLog(
+        `Failed to create Pengaturan Desa in index ${index + 1}\n${
+          error.message
+        }`,
+        "CREATE_PENGATURAN_DESA"
+      );
+    }
+  }
+}
+
+async function fillCreatePengaturanDesa(page: Page, randomPdfPath: string) {
   await page.goto(URL);
 
   // nama
-  await page.waitForSelector('input[name="nama"]');
+  await page.waitForSelector('input[name="nama"]', { timeout: 500 });
   await page.type('input[name="nama"]', faker.lorem.words());
 
   // upload document
@@ -26,9 +48,11 @@ export default async function createPengaturanDesa(page: Page) {
   await elementHandle?.uploadFile(randomPdfPath);
 
   // tipe
-  await page.waitForSelector(".select2-selection.select2-selection--single");
+  await page.waitForSelector(".select2-selection.select2-selection--single", {
+    timeout: 500,
+  });
   await page.click(".select2-selection.select2-selection--single");
-  await page.waitForSelector(".select2-results li");
+  await page.waitForSelector(".select2-results li", { timeout: 500 });
   const valid = await page.$$(".select2-results li");
   const randomIndex = faker.number.int({ min: 1, max: 3 });
   await valid[randomIndex].click();
@@ -42,7 +66,9 @@ export default async function createPengaturanDesa(page: Page) {
     .getMonth()
     .toString()
     .padStart(2, "0")}-${date.getFullYear()}`;
-  await page.waitForSelector('input[name="attr[tgl_ditetapkan]"]');
+  await page.waitForSelector('input[name="attr[tgl_ditetapkan]"]', {
+    timeout: 500,
+  });
 
   await page.evaluate(() => {
     const element = document.querySelector(
@@ -60,6 +86,8 @@ export default async function createPengaturanDesa(page: Page) {
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 4000 }),
   ]);
+
+  await page.waitForSelector('[title="Tambah Menu Baru"]', { timeout: 500 });
 }

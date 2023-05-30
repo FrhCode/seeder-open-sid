@@ -3,17 +3,38 @@ import path from "path";
 import fs from "fs";
 import arrayElement from "../utils/arrayElement";
 import { faker } from "@faker-js/faker";
+import writeErrorLog from "../utils/writeErrorLog";
 
-const URL = "http://localhost/sid/index.php/dokumen_sekretariat/form/2";
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
 
-export default async function createSkKades(page: Page) {
+const URL = `${process.env.APP_URL}/index.php/dokumen_sekretariat/form/2`;
+
+export default async function createSkKades(page: Page, count: number) {
   const pdfFolder = path.join(process.cwd(), "assets", "pdf");
 
   const listPdf = fs
     .readdirSync(pdfFolder)
     .filter((file) => new RegExp(".*.pdf$", "gi").exec(file));
 
-  const randomPdfPath = path.join(pdfFolder, arrayElement(listPdf));
+  for (let index = 0; index < count; index++) {
+    console.log(`Creating SK Kades ${index + 1} of ${count}`);
+    const randomPdfPath = path.join(pdfFolder, arrayElement(listPdf));
+
+    try {
+      await fillCreateSkKadesForm(page, randomPdfPath);
+    } catch (error: any) {
+      index--;
+
+      await writeErrorLog(
+        `Failed to create sk kades in index ${index + 1}\n${error.message}`,
+        "CREATE_SK_KADES"
+      );
+    }
+  }
+}
+
+async function fillCreateSkKadesForm(page: Page, randomPdfPath: string) {
   await page.goto(URL);
 
   // nama
@@ -53,6 +74,8 @@ export default async function createSkKades(page: Page) {
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 4000 }),
   ]);
+
+  await page.waitForSelector('[title="Tambah Menu Baru"]', { timeout: 500 });
 }

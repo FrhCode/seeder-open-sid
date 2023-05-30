@@ -2,6 +2,9 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       waitTimeout: string;
+      LOGIN_USER: string;
+      LOGIN_PASSWORD: string;
+      APP_URL: string;
     }
   }
 }

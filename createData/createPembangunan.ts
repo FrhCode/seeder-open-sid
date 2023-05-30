@@ -5,14 +5,36 @@ import sleep from "../utils/sleep";
 import path from "path";
 import fs from "fs";
 import arrayElement from "../utils/arrayElement";
+import writeErrorLog from "../utils/writeErrorLog";
+import createPembangunanProgress from "./createPembangunanProgress";
 
-const URL = "http://localhost/sidisa/index.php/admin_pembangunan/form";
+import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config()
 
-export default async function createPembangunan(page: Page) {
+const URL = `${process.env.APP_URL}/index.php/admin_pembangunan/form`;
+
+export default async function createPembangunan(page: Page, count: number) {
+  for (let index = 0; index < count; index++) {
+    console.log(`Creating pembangunan ${index + 1} of ${count}`);
+
+    try {
+      await fillPembangunanForm(page);
+    } catch (error: any) {
+      index--;
+
+      await writeErrorLog(
+        `Failed to create pembangunan in index ${index + 1}\n${error.message}`,
+        "CREATE_PEMBANGUNAN"
+      );
+    }
+  }
+
+  await createPembangunanProgress(page);
+}
+
+async function fillPembangunanForm(page: Page) {
   await page.goto(URL);
   const pendingXHR = new PendingXHR(page);
-
-  await sleep(500);
 
   // judul
   await page.waitForSelector('input[name="judul"]', { timeout: 500 });
@@ -83,7 +105,14 @@ export default async function createPembangunan(page: Page) {
 
   // KETERANGAN
   await page.waitForSelector('textarea[name="keterangan"]', { timeout: 500 });
-  await page.type('textarea[name="keterangan"]', faker.lorem.sentence());
+  const text = faker.lorem.paragraph();
+  await page.evaluate((text) => {
+    const textInput = document.querySelector(
+      'textarea[name="keterangan"]'
+    ) as HTMLTextAreaElement;
+
+    textInput.value = text;
+  }, text);
 
   // SUMBER DANA
   await page.waitForSelector('[data-select2-id="1"]', { timeout: 500 });
@@ -116,7 +145,7 @@ export default async function createPembangunan(page: Page) {
   await page.waitForSelector(".select2-results__options li", { timeout: 500 });
   options = await page.$$(".select2-results__options li");
   randomNumber = faker.number.int({
-    min: 0,
+    min: 1,
     max: options.length - 1,
   });
   await options[randomNumber].click();
@@ -133,7 +162,7 @@ export default async function createPembangunan(page: Page) {
   });
   await options[randomNumber].click();
 
-  const articleFolder = path.join(process.cwd(), "assets", "person");
+  const articleFolder = path.join(process.cwd(), "assets", "article");
 
   const listImg = fs
     .readdirSync(articleFolder)
@@ -149,6 +178,8 @@ export default async function createPembangunan(page: Page) {
   // SUBMIT
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 4000 }),
   ]);
+
+  await page.waitForSelector('[title="Tambah Data Baru"]', { timeout: 500 });
 }

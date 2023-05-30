@@ -1,7 +1,8 @@
-function generateRandomArray(
+export default function generateRandomArray(
   length: number,
   min_value: number,
-  max_value: number
+  max_value: number,
+  excludedArray: number[] = []
 ): number[] {
   if (length <= 0 || min_value >= max_value) {
     return [];
@@ -9,10 +10,13 @@ function generateRandomArray(
 
   const numbers: number[] = [];
 
-  for (let i = 0; i < length; i++) {
+  while (numbers.length < length) {
     let randomNumber =
       Math.floor(Math.random() * (max_value - min_value + 1)) + min_value;
-    numbers.push(randomNumber);
+
+    if (!excludedArray.includes(randomNumber)) {
+      numbers.push(randomNumber);
+    }
   }
 
   numbers.sort((a, b) => a - b);

@@ -4,8 +4,12 @@ import sleep from "../utils/sleep";
 import path from "path";
 import fs, { link } from "fs";
 import arrayElement from "../utils/arrayElement";
+import writeErrorLog from "../utils/writeErrorLog";
 
-const URL = "http://localhost/sidisa/index.php/web";
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
+
+const URL = `${process.env.APP_URL}/index.php/web`;
 
 async function getArticleCreateLink(page: Page) {
   const [a, ul, b] = await page.$$(".nav.nav-pills.nav-stacked");
@@ -90,10 +94,17 @@ async function generateArticle(page: Page, link: string) {
 
       await Promise.all([
         page.click("button[type='submit']"),
-        page.waitForNavigation({ waitUntil: "networkidle0", timeout: 2000 }),
+        page.waitForNavigation({ waitUntil: "networkidle0", timeout: 4000 }),
       ]);
-    } catch (error) {
+    } catch (error: any) {
       index--;
+
+      await writeErrorLog(
+        `Failed to create article in ${link} index ${index + 1}\n${
+          error.message
+        }`,
+        "CREATE_ARTICLE"
+      );
     }
   }
 }
