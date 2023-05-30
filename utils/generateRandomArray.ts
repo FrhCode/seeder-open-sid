@@ -1,25 +1,25 @@
 export default function generateRandomArray(
   length: number,
-  min_value: number,
-  max_value: number,
+  minValue: number,
+  maxValue: number,
   excludedArray: number[] = []
 ): number[] {
-  if (length <= 0 || min_value >= max_value) {
-    return [];
+  if (length <= 0 || minValue >= maxValue) {
+    return []
   }
 
-  const numbers: number[] = [];
+  const numbers: number[] = []
 
   while (numbers.length < length) {
-    let randomNumber =
-      Math.floor(Math.random() * (max_value - min_value + 1)) + min_value;
+    const randomNumber =
+      Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue
 
     if (!excludedArray.includes(randomNumber)) {
-      numbers.push(randomNumber);
+      numbers.push(randomNumber)
     }
   }
 
-  numbers.sort((a, b) => a - b);
+  numbers.sort((a, b) => a - b)
 
-  return numbers;
+  return numbers
 }

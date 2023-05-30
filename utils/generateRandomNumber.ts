@@ -5,7 +5,7 @@ export default function generateRandomNumber(
 ): number {
   let randomNum: number;
 
-  if (exclude && exclude.length > 0) {
+  if ((exclude != null) && exclude.length > 0) {
     do {
       randomNum = Math.floor(Math.random() * (end - start + 1)) + start;
     } while (exclude.includes(randomNum));

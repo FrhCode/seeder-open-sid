@@ -1,7 +1,7 @@
-export default async function reject(ms: number) {
-  return new Promise((resolve, reject) =>
+export default async function reject(ms: number): Promise<unknown> {
+  return await new Promise((resolve, reject) =>
     setTimeout(() => {
-      reject("");
+      reject(new Error('fail'))
     }, ms)
-  );
+  )
 }

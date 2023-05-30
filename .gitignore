@@ -1,2 +1,4 @@
 node_modules
 screenshot
+log
+.env
