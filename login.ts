@@ -8,15 +8,15 @@ export default async function login(page: Page): Promise<void> {
   await page.goto(URL)
 
   // username
-  await page.waitForSelector("input[name='username']")
+  await page.waitForSelector("input[name='username']", { timeout: 500 })
   await page.type("input[name='username']", process.env.LOGIN_USER ?? '')
   // passowrd
-  await page.waitForSelector("input[name='password']")
+  await page.waitForSelector("input[name='password']", { timeout: 500 })
   await page.type("input[name='password']", process.env.LOGIN_PASSWORD ?? '')
 
   // submit and navigate
   await Promise.all([
     page.click('button'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 }

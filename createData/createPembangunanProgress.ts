@@ -30,7 +30,7 @@ async function fillFormProgress(
 
   await Promise.all([
     page.click('[title="Tambah Data Baru"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   // click custom input percentage
@@ -66,7 +66,7 @@ async function fillFormProgress(
 
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data Baru"]', { timeout: 500 })

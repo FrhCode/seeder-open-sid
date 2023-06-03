@@ -29,15 +29,23 @@ export default async function createDusun(
     }
   }
 
+  await page.waitForSelector('[name="per_page"]', { timeout: 500 })
+  await Promise.all([
+    page.select('[name="per_page"]', '100'),
+    page.waitForNavigation({ waitUntil: 'networkidle0' })
+  ])
+
   // CREATE RW
   const createRwUrls = await page.$$eval(
     'a.btn[title="Rincian Sub Wilayah"]',
     (anchors) => {
+      console.log(anchors)
+
       return anchors.map((a) => (a as HTMLAnchorElement).href)
     }
   )
 
-  const randomNumber = faker.number.int({ min: 5, max: 10 })
+  const randomNumber = faker.number.int({ min: 3, max: 6 })
 
   for (const url of createRwUrls) {
     await createRw(page, randomNumber, url)
@@ -54,7 +62,7 @@ async function fillCreateDusunForm(page: Page): Promise<void> {
   // SUBMIT
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data"]', { timeout: 500 })

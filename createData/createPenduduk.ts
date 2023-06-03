@@ -99,8 +99,8 @@ async function fillPendudukForm(
 
   // tanggal lahir
   const date = faker.date.between({
-    from: '1990-01-01T00:00:00.000Z',
-    to: '2000-01-01T00:00:00.000Z'
+    from: '1970-01-01T00:00:00.000Z',
+    to: '2022-01-01T00:00:00.000Z'
   })
   const formatedDate = `${date.getDate().toString().padStart(2, '0')}-${date
     .getMonth()
@@ -254,7 +254,7 @@ async function fillPendudukForm(
   // SUBMIT
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Manajemen Dokumen Penduduk"]', {

@@ -94,7 +94,7 @@ async function fillCreatePengaturanDesa(
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Menu Baru"]', { timeout: 500 })

@@ -46,7 +46,7 @@ async function fillCreateSkKadesForm(
   await page.goto(URL)
 
   // nama
-  await page.waitForSelector('input[name="nama"]')
+  await page.waitForSelector('input[name="nama"]', { timeout: 500 })
   await page.type('input[name="nama"]', faker.lorem.words())
 
   // upload document
@@ -62,7 +62,9 @@ async function fillCreateSkKadesForm(
     .getMonth()
     .toString()
     .padStart(2, '0')}-${date.getFullYear()}`
-  await page.waitForSelector('input[name="attr[tgl_kep_kades]"]')
+  await page.waitForSelector('input[name="attr[tgl_kep_kades]"]', {
+    timeout: 500
+  })
   await page.type('input[name="attr[tgl_kep_kades]"]', formatedDate)
 
   await page.evaluate(() => {
@@ -76,13 +78,15 @@ async function fillCreateSkKadesForm(
   await page.type('input[name="attr[tgl_kep_kades]"]', formatedDate)
 
   // keterangan
-  await page.waitForSelector('textarea[name="attr[keterangan]"]')
+  await page.waitForSelector('textarea[name="attr[keterangan]"]', {
+    timeout: 500
+  })
   await page.type('textarea[name="attr[keterangan]"]', faker.lorem.words())
 
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Menu Baru"]', { timeout: 500 })

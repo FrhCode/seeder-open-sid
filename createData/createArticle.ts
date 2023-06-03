@@ -40,13 +40,14 @@ async function generateArticle(page: Page, link: string): Promise<void> {
       await page.goto(link)
 
       await page.waitForSelector(
-        '.btn.btn-social.btn-flat.btn-success.btn-sm.btn-sm.visible-xs-block.visible-sm-inline-block.visible-md-inline-block.visible-lg-inline-block'
+        '.btn.btn-social.btn-flat.btn-success.btn-sm.btn-sm.visible-xs-block.visible-sm-inline-block.visible-md-inline-block.visible-lg-inline-block',
+        { timeout: 2000 }
       )
       await page.click(
         '.btn.btn-social.btn-flat.btn-success.btn-sm.btn-sm.visible-xs-block.visible-sm-inline-block.visible-md-inline-block.visible-lg-inline-block'
       )
 
-      await page.waitForSelector('input[name="judul"]')
+      await page.waitForSelector('input[name="judul"]', { timeout: 2000 })
       await page.type('input[name="judul"]', faker.lorem.text())
 
       const articleFolder = path.join(process.cwd(), 'assets', 'person')
@@ -62,7 +63,7 @@ async function generateArticle(page: Page, link: string): Promise<void> {
       const elementHandle = await page.$('input[type="file"][name="gambar"]')
       await elementHandle?.uploadFile(randomImgPath)
 
-      await page.waitForSelector('iframe')
+      await page.waitForSelector('iframe', { timeout: 2000 })
 
       await sleep(1000)
 
@@ -99,7 +100,7 @@ async function generateArticle(page: Page, link: string): Promise<void> {
 
       await Promise.all([
         page.click("button[type='submit']"),
-        page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+        page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
       ])
     } catch (error) {
       if (!(error instanceof Error)) return
@@ -119,6 +120,8 @@ export default async function createArticle(page: Page): Promise<void> {
   await page.goto(URL)
 
   const links = await getArticleCreateLink(page)
+  console.log(links)
+
   // await generateArticle(page, links[0]);
 
   // links.forEach(async (link) => {

@@ -49,7 +49,7 @@ async function fillRtForm(
 ): Promise<void> {
   await Promise.all([
     page.click('[title="Tambah Data"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   const randomNumberExcludeExisting = generateRandomNumber(
@@ -63,7 +63,7 @@ async function fillRtForm(
 
   await Promise.all([
     page.click('[type="submit"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data"]', { timeout: 500 })

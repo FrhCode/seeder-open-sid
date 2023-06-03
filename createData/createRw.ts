@@ -4,7 +4,7 @@ import writeErrorLog from '../utils/writeErrorLog'
 import generateRandomNumber from '../utils/generateRandomNumber'
 import createRt from './createRt'
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from 'dotenv'
 dotenv.config()
 
 export default async function createRw(
@@ -51,7 +51,7 @@ export default async function createRw(
     }
   )
 
-  const randomNumber = faker.number.int({ min: 5, max: 10 })
+  const randomNumber = faker.number.int({ min: 5, max: 9 })
   for (const url of createRtUrls) {
     await createRt(page, randomNumber, url)
   }
@@ -63,7 +63,7 @@ async function fillCreateRwForm(
 ): Promise<void> {
   await Promise.all([
     page.click('[title="Tambah Data"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   const randomNumberExcludeExisting = generateRandomNumber(
@@ -77,7 +77,7 @@ async function fillCreateRwForm(
 
   await Promise.all([
     page.click('[type="submit"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 4000 })
+    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data"]', { timeout: 500 })

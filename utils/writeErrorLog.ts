@@ -11,6 +11,8 @@ type ErrorType =
   | 'CREATE_DUSUN'
   | 'CREATE_RW'
   | 'CREATE_RT'
+  | 'CREATE_SUB_GALERY'
+  | 'CREATE_GALERY'
 
 export default async function writeErrorLog(
   text: string,
@@ -45,6 +47,12 @@ export default async function writeErrorLog(
       break
     case 'CREATE_RT':
       fileName = 'create_rt_error.txt'
+      break
+    case 'CREATE_SUB_GALERY':
+      fileName = 'create_sub_galery_error.txt'
+      break
+    case 'CREATE_GALERY':
+      fileName = 'create_galery_error.txt'
       break
 
     default:
