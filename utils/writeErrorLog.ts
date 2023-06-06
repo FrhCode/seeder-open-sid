@@ -1,5 +1,5 @@
-import * as path from "path"
-import appendTextToFile from "./appendTextToFile"
+import * as path from "path";
+import appendTextToFile from "./appendTextToFile";
 
 type ErrorType =
   | "CREATE_PENDUDUK"
@@ -16,6 +16,7 @@ type ErrorType =
   | "CREATE_LAPAK_PRODUCT"
   | "CREATE_LAPAK_CATEGORY"
   | "CREATE_LAPAK_PELAPAK"
+  | "CREATE_VAKSIN";
 
 export default async function writeErrorLog(
   text: string,
@@ -35,14 +36,15 @@ export default async function writeErrorLog(
     CREATE_GALERY: "create_galery_error.txt",
     CREATE_LAPAK_PRODUCT: "create_lapak_product_error.txt",
     CREATE_LAPAK_CATEGORY: "create_lapak_category_error.txt",
-    CREATE_LAPAK_PELAPAK: "create_lapak_pelapak_error.txt"
-  }
+    CREATE_LAPAK_PELAPAK: "create_lapak_pelapak_error.txt",
+    CREATE_VAKSIN: "create_vaksin_error.txt",
+  };
 
-  const folderName = path.join(process.cwd(), "log", "error")
+  const folderName = path.join(process.cwd(), "log", "error");
 
-  const fileName = errorFileNames[errorType]
+  const fileName = errorFileNames[errorType];
 
-  const filePath = path.join(folderName, fileName)
+  const filePath = path.join(folderName, fileName);
 
-  appendTextToFile(filePath, text)
+  appendTextToFile(filePath, text);
 }

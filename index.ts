@@ -1,20 +1,18 @@
-import puppeteer from "puppeteer"
-import login from "./login"
-import * as dotenv from "dotenv"
-import createLapakProduct from "./createData/createLapakProduct"
-import deleteAllProducts from "./createData/deleteAllProducts"
-import writeErrorLog from "./utils/writeErrorLog"
-import createLapakCategory from "./createData/createLapakCategory"
-import createLapakPelapak from "./createData/createLapakPelapak"
+import puppeteer from "puppeteer";
+import login from "./login";
+import * as dotenv from "dotenv";
+import createLapakProduct from "./createData/createLapakProduct";
+import createLapakPelapak from "./createData/createLapakPelapak";
+import createVaksin from "./createData/createVaksin";
 
-dotenv.config()
+dotenv.config();
 
-const PENDUDUK_COUNT = 1000
-const DUSUN_COUNT = 5
-const PENGATURAN_DESA_COUNT = 100
-const SK_KADES_COUNT = 50
-const PEMBANGUNAN_COUNT = 100
-const GALERY_COUNT = 100
+const PENDUDUK_COUNT = 1000;
+const DUSUN_COUNT = 5;
+const PENGATURAN_DESA_COUNT = 100;
+const SK_KADES_COUNT = 50;
+const PEMBANGUNAN_COUNT = 100;
+const GALERY_COUNT = 100;
 
 console.log({
   PEMBANGUNAN_COUNT,
@@ -22,22 +20,22 @@ console.log({
   PENDUDUK_COUNT,
   PENGATURAN_DESA_COUNT,
   SK_KADES_COUNT,
-  GALERY_COUNT
-})
+  GALERY_COUNT,
+});
 
 async function main() {
   const browser = await puppeteer.launch({
-    // headless: false,
-    headless: "new",
-    // devtools: true,
+    headless: false,
+    // headless: "new",
+    devtools: true,
 
     defaultViewport: null,
-    args: ["--start-maximized"]
-  })
+    args: ["--start-maximized"],
+  });
   // const page = await browser.newPage();
-  const [page] = await browser.pages()
+  const [page] = await browser.pages();
 
-  await login(page)
+  await login(page);
 
   // await deleteAllDusun(page)
   // await createDusun(page, DUSUN_COUNT)
@@ -67,15 +65,13 @@ async function main() {
   // await deleteAllProducts(page)
 
   // await createLapakCategory(page, 5)
-  await createLapakPelapak(page, 10)
-  await createLapakProduct(page, 100)
+  // await createLapakPelapak(page, 10);
+  // await createLapakProduct(page, 100);
 
   // console.log("FINISH")
-
+  await createVaksin(page);
   // await
-  await browser.close()
+  await browser.close();
 }
 
-main()
-  .then(() => {})
-  .catch(() => {})
+main();
