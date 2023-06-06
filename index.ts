@@ -1,7 +1,11 @@
-import puppeteer from 'puppeteer'
-import login from './login'
-import * as dotenv from 'dotenv'
-import createGalery from './createData/createGalery'
+import puppeteer from "puppeteer"
+import login from "./login"
+import * as dotenv from "dotenv"
+import createLapakProduct from "./createData/createLapakProduct"
+import deleteAllProducts from "./createData/deleteAllProducts"
+import writeErrorLog from "./utils/writeErrorLog"
+import createLapakCategory from "./createData/createLapakCategory"
+import createLapakPelapak from "./createData/createLapakPelapak"
 
 dotenv.config()
 
@@ -17,17 +21,18 @@ console.log({
   DUSUN_COUNT,
   PENDUDUK_COUNT,
   PENGATURAN_DESA_COUNT,
-  SK_KADES_COUNT
+  SK_KADES_COUNT,
+  GALERY_COUNT
 })
 
 async function main(): Promise<void> {
   const browser = await puppeteer.launch({
     // headless: false,
-    headless: 'new',
+    headless: "new",
     // devtools: true,
 
     defaultViewport: null,
-    args: ['--start-maximized']
+    args: ["--start-maximized"]
   })
   // const page = await browser.newPage();
   const [page] = await browser.pages()
@@ -43,8 +48,32 @@ async function main(): Promise<void> {
   // await createArticle(page)
 
   // await createSubGalery(page)
-  await createGalery(page, GALERY_COUNT)
-  // await browser.close()
+  // await createGalery(page, GALERY_COUNT)
+  // await createLapakProduct(page)
+
+  // for (let index = 0; index < 1; index++) {
+  //   try {
+  //     await createLapakProduct(page)
+  //   } catch (error) {
+  //     if (!(error instanceof Error)) return
+
+  //     writeErrorLog(
+  //       `Failed to create product in index ${index + 1}\n${error.message}`,
+  //       "CREATE_LAPAK_PRODUCT"
+  //     )
+  //   }
+  // }
+
+  // await deleteAllProducts(page)
+
+  // await createLapakCategory(page, 5)
+  // await createLapakPelapak(page, 10)
+  await createLapakProduct(page, 100)
+
+  // console.log("FINISH")
+
+  // await
+  await browser.close()
 }
 
 main()
