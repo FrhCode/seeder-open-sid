@@ -20,7 +20,7 @@ type ErrorType =
 export default async function writeErrorLog(
   text: string,
   errorType: ErrorType
-): Promise<void> {
+) {
   const errorFileNames: Record<ErrorType, string> = {
     CREATE_PENDUDUK: "create_penduduk_error.txt",
     CREATE_PENGATURAN_DESA: "create_pengaturan_desa_error.txt",

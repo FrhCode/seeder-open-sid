@@ -1,24 +1,21 @@
-import generateNik from '../utils/generateNik'
-import path from 'path'
-import fs from 'fs'
-import { faker } from '@faker-js/faker'
-import { type Page } from 'puppeteer'
+import generateNik from "../utils/generateNik"
+import path from "path"
+import fs from "fs"
+import { faker } from "@faker-js/faker"
+import { type Page } from "puppeteer"
 
-import { PendingXHR } from 'pending-xhr-puppeteer'
-import arrayElement from '../utils/arrayElement'
-import sleep from '../utils/sleep'
-import writeErrorLog from '../utils/writeErrorLog'
+import { PendingXHR } from "pending-xhr-puppeteer"
+import arrayElement from "../utils/arrayElement"
+import sleep from "../utils/sleep"
+import writeErrorLog from "../utils/writeErrorLog"
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from "dotenv" // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/penduduk/form_peristiwa/5`
 
-export default async function createPenduduk(
-  page: Page,
-  count: number
-): Promise<void> {
-  const personFolder = path.join(process.cwd(), 'assets', 'person')
+export default async function createPenduduk(page: Page, count: number) {
+  const personFolder = path.join(process.cwd(), "assets", "person")
 
   const listImg = fs
     .readdirSync(personFolder)
@@ -37,16 +34,13 @@ export default async function createPenduduk(
 
       await writeErrorLog(
         `Failed to create user in index ${index + 1}\n${error.message}`,
-        'CREATE_PENDUDUK'
+        "CREATE_PENDUDUK"
       )
     }
   }
 }
 
-async function fillPendudukForm(
-  page: Page,
-  randomPdfPath: string
-): Promise<void> {
+async function fillPendudukForm(page: Page, randomPdfPath: string) {
   await page.goto(URL)
 
   await sleep(500)
@@ -66,7 +60,7 @@ async function fillPendudukForm(
   // hubungan dalam keluarga
   await page.waitForSelector('select[name="kk_level"]~*', { timeout: 500 })
   await page.click('select[name="kk_level"]~*')
-  const [, ...choice] = await page.$$('.select2-results__options > li')
+  const [, ...choice] = await page.$$(".select2-results__options > li")
   await choice[0].click()
 
   // Jenis kelamin
@@ -99,15 +93,15 @@ async function fillPendudukForm(
 
   // tanggal lahir
   const date = faker.date.between({
-    from: '1970-01-01T00:00:00.000Z',
-    to: '2022-01-01T00:00:00.000Z'
+    from: "1970-01-01T00:00:00.000Z",
+    to: "2022-01-01T00:00:00.000Z"
   })
-  const formatedDate = `${date.getDate().toString().padStart(2, '0')}-${date
+  const formatedDate = `${date.getDate().toString().padStart(2, "0")}-${date
     .getMonth()
     .toString()
-    .padStart(2, '0')}-${date.getFullYear()}`
+    .padStart(2, "0")}-${date.getFullYear()}`
   await page.evaluate((formatedDate) => {
-    const tanggalLahirInput = document.querySelector('#tgl_lahir')
+    const tanggalLahirInput = document.querySelector("#tgl_lahir")
 
     if (!(tanggalLahirInput instanceof HTMLInputElement)) return
     tanggalLahirInput.value = formatedDate
@@ -142,11 +136,11 @@ async function fillPendudukForm(
 
   // nama ayah
   await page.waitForSelector('input[name="nama_ayah"]', { timeout: 500 })
-  await page.type('input[name="nama_ayah"]', '-')
+  await page.type('input[name="nama_ayah"]', "-")
 
   // nama ibu
   await page.waitForSelector('input[name="nama_ibu"]', { timeout: 500 })
-  await page.type('input[name="nama_ibu"]', '-')
+  await page.type('input[name="nama_ibu"]', "-")
 
   // await sleep(parseInt(waitTimeout));
 
@@ -177,7 +171,7 @@ async function fillPendudukForm(
     (options) => {
       const elements = options.filter(
         (option) =>
-          option.textContent !== '-' && option.textContent !== 'Pilih RW'
+          option.textContent !== "-" && option.textContent !== "Pilih RW"
       )
 
       function arrayElement<T>(element: T[]): T {
@@ -186,7 +180,7 @@ async function fillPendudukForm(
 
       return arrayElement(elements).value !== null
         ? arrayElement(elements).value
-        : '1'
+        : "1"
     }
   )
 
@@ -205,7 +199,7 @@ async function fillPendudukForm(
     (options) => {
       const elements = options.filter(
         (option) =>
-          option.textContent !== '-' && option.textContent !== 'Pilih RT '
+          option.textContent !== "-" && option.textContent !== "Pilih RT "
       )
 
       function arrayElement<T>(element: T[]): T {
@@ -214,7 +208,7 @@ async function fillPendudukForm(
 
       return arrayElement(elements).value !== null
         ? arrayElement(elements).value
-        : '1'
+        : "1"
     }
   )
 
@@ -225,13 +219,13 @@ async function fillPendudukForm(
   await page.waitForSelector('input[name="alamat_sebelumnya"]', {
     timeout: 5000
   })
-  await page.type('input[name="alamat_sebelumnya"]', '-')
+  await page.type('input[name="alamat_sebelumnya"]', "-")
 
   // Cara menghubungi
   await page.waitForSelector('select[name="hubung_warga"]', { timeout: 500 })
   await page.select(
     'select[name="hubung_warga"]',
-    faker.helpers.arrayElement(['Email', 'Telegram'])
+    faker.helpers.arrayElement(["Email", "Telegram"])
   )
 
   // Status Kawin
@@ -254,7 +248,7 @@ async function fillPendudukForm(
   // SUBMIT
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Manajemen Dokumen Penduduk"]', {

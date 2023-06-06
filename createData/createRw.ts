@@ -1,27 +1,23 @@
-import { faker } from '@faker-js/faker'
-import { type Page } from 'puppeteer'
-import writeErrorLog from '../utils/writeErrorLog'
-import generateRandomNumber from '../utils/generateRandomNumber'
-import createRt from './createRt'
+import { faker } from "@faker-js/faker"
+import { type Page } from "puppeteer"
+import writeErrorLog from "../utils/writeErrorLog"
+import generateRandomNumber from "../utils/generateRandomNumber"
+import createRt from "./createRt"
 
-import * as dotenv from 'dotenv'
+import * as dotenv from "dotenv"
 dotenv.config()
 
-export default async function createRw(
-  page: Page,
-  count: number,
-  URL: string
-): Promise<void> {
+export default async function createRw(page: Page, count: number, URL: string) {
   await page.goto(URL)
 
   let existingRwNumbers: number[] = []
 
   try {
-    await page.waitForSelector('tbody tr:not(:first-child) td:nth-child(3)', {
+    await page.waitForSelector("tbody tr:not(:first-child) td:nth-child(3)", {
       timeout: 500
     })
     existingRwNumbers = await page
-      .$$eval('tbody tr:not(:first-child) td:nth-child(3)', (tds) => {
+      .$$eval("tbody tr:not(:first-child) td:nth-child(3)", (tds) => {
         return tds.map((td) => td.innerHTML)
       })
       .then((value) => value.map((a) => parseInt(a)))
@@ -39,7 +35,7 @@ export default async function createRw(
 
       await writeErrorLog(
         `Failed to create RW in index ${index + 1}\n${error.message}`,
-        'CREATE_RW'
+        "CREATE_RW"
       )
     }
   }
@@ -57,13 +53,10 @@ export default async function createRw(
   }
 }
 
-async function fillCreateRwForm(
-  page: Page,
-  existingRwNumbers: number[]
-): Promise<void> {
+async function fillCreateRwForm(page: Page, existingRwNumbers: number[]) {
   await Promise.all([
     page.click('[title="Tambah Data"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   const randomNumberExcludeExisting = generateRandomNumber(
@@ -77,7 +70,7 @@ async function fillCreateRwForm(
 
   await Promise.all([
     page.click('[type="submit"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data"]', { timeout: 500 })

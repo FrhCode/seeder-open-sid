@@ -4,7 +4,7 @@ dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/siteman`
 
-export default async function login(page: Page): Promise<void> {
+export default async function login(page: Page) {
   await page.goto(URL)
 
   // username

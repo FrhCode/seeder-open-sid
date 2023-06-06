@@ -1,25 +1,21 @@
-import { type Page } from 'puppeteer'
-import writeErrorLog from '../utils/writeErrorLog'
-import generateRandomNumber from '../utils/generateRandomNumber'
+import { type Page } from "puppeteer"
+import writeErrorLog from "../utils/writeErrorLog"
+import generateRandomNumber from "../utils/generateRandomNumber"
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from "dotenv" // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
-export default async function createRt(
-  page: Page,
-  count: number,
-  URL: string
-): Promise<void> {
+export default async function createRt(page: Page, count: number, URL: string) {
   await page.goto(URL)
 
   let existingRtNumbers: number[] = []
 
   try {
-    await page.waitForSelector('tbody tr td:nth-child(3)', {
+    await page.waitForSelector("tbody tr td:nth-child(3)", {
       timeout: 500
     })
     existingRtNumbers = await page
-      .$$eval('tbody tr td:nth-child(3)', (tds) => {
+      .$$eval("tbody tr td:nth-child(3)", (tds) => {
         return tds.map((td) => td.innerHTML)
       })
       .then((value) => value.map((a) => parseInt(a)))
@@ -37,19 +33,16 @@ export default async function createRt(
 
       await writeErrorLog(
         `Failed to create RT in index ${index + 1}\n${error.message}`,
-        'CREATE_RT'
+        "CREATE_RT"
       )
     }
   }
 }
 
-async function fillRtForm(
-  page: Page,
-  existingRtNumbers: number[]
-): Promise<void> {
+async function fillRtForm(page: Page, existingRtNumbers: number[]) {
   await Promise.all([
     page.click('[title="Tambah Data"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   const randomNumberExcludeExisting = generateRandomNumber(
@@ -63,7 +56,7 @@ async function fillRtForm(
 
   await Promise.all([
     page.click('[type="submit"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data"]', { timeout: 500 })

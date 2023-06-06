@@ -1,21 +1,18 @@
-import { faker } from '@faker-js/faker'
-import { type Page } from 'puppeteer'
-import { PendingXHR } from 'pending-xhr-puppeteer'
-import path from 'path'
-import fs from 'fs'
-import arrayElement from '../utils/arrayElement'
-import writeErrorLog from '../utils/writeErrorLog'
-import createPembangunanProgress from './createPembangunanProgress'
+import { faker } from "@faker-js/faker"
+import { type Page } from "puppeteer"
+import { PendingXHR } from "pending-xhr-puppeteer"
+import path from "path"
+import fs from "fs"
+import arrayElement from "../utils/arrayElement"
+import writeErrorLog from "../utils/writeErrorLog"
+import createPembangunanProgress from "./createPembangunanProgress"
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from "dotenv" // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/admin_pembangunan/form`
 
-export default async function createPembangunan(
-  page: Page,
-  count: number
-): Promise<void> {
+export default async function createPembangunan(page: Page, count: number) {
   for (let index = 0; index < count; index++) {
     console.log(`Creating pembangunan ${index + 1} of ${count}`)
 
@@ -27,7 +24,7 @@ export default async function createPembangunan(
 
       await writeErrorLog(
         `Failed to create pembangunan in index ${index + 1}\n${error.message}`,
-        'CREATE_PEMBANGUNAN'
+        "CREATE_PEMBANGUNAN"
       )
     }
   }
@@ -35,7 +32,7 @@ export default async function createPembangunan(
   await createPembangunanProgress(page)
 }
 
-async function fillPembangunanForm(page: Page): Promise<void> {
+async function fillPembangunanForm(page: Page) {
   await page.goto(URL)
   const pendingXHR = new PendingXHR(page)
 
@@ -121,8 +118,8 @@ async function fillPembangunanForm(page: Page): Promise<void> {
   await page.waitForSelector('[data-select2-id="1"]', { timeout: 500 })
   await page.click('[data-select2-id="1"]')
   await pendingXHR.waitForAllXhrFinished()
-  await page.waitForSelector('.select2-results__options li', { timeout: 500 })
-  let options = await page.$$('.select2-results__options li')
+  await page.waitForSelector(".select2-results__options li", { timeout: 500 })
+  let options = await page.$$(".select2-results__options li")
   let randomNumber = faker.number.int({
     min: 0,
     max: options.length - 1
@@ -133,8 +130,8 @@ async function fillPembangunanForm(page: Page): Promise<void> {
   await page.waitForSelector('[data-select2-id="3"]', { timeout: 500 })
   await page.click('[data-select2-id="3"]')
   await pendingXHR.waitForAllXhrFinished()
-  await page.waitForSelector('.select2-results__options li', { timeout: 500 })
-  options = await page.$$('.select2-results__options li')
+  await page.waitForSelector(".select2-results__options li", { timeout: 500 })
+  options = await page.$$(".select2-results__options li")
   randomNumber = faker.number.int({
     min: 0,
     max: options.length - 1
@@ -145,8 +142,8 @@ async function fillPembangunanForm(page: Page): Promise<void> {
   await page.waitForSelector('[data-select2-id="5"]', { timeout: 500 })
   await page.click('[data-select2-id="5"]')
   await pendingXHR.waitForAllXhrFinished()
-  await page.waitForSelector('.select2-results__options li', { timeout: 500 })
-  options = await page.$$('.select2-results__options li')
+  await page.waitForSelector(".select2-results__options li", { timeout: 500 })
+  options = await page.$$(".select2-results__options li")
   randomNumber = faker.number.int({
     min: 1,
     max: options.length - 1
@@ -157,15 +154,15 @@ async function fillPembangunanForm(page: Page): Promise<void> {
   await page.waitForSelector('[data-select2-id="7"]', { timeout: 500 })
   await page.click('[data-select2-id="7"]')
   await pendingXHR.waitForAllXhrFinished()
-  await page.waitForSelector('.select2-results__options li', { timeout: 500 })
-  options = await page.$$('.select2-results__options li')
+  await page.waitForSelector(".select2-results__options li", { timeout: 500 })
+  options = await page.$$(".select2-results__options li")
   randomNumber = faker.number.int({
     min: 1,
     max: options.length - 1
   })
   await options[randomNumber].click()
 
-  const articleFolder = path.join(process.cwd(), 'assets', 'article')
+  const articleFolder = path.join(process.cwd(), "assets", "article")
 
   const listImg = fs
     .readdirSync(articleFolder)
@@ -181,7 +178,7 @@ async function fillPembangunanForm(page: Page): Promise<void> {
   // SUBMIT
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data Baru"]', { timeout: 500 })

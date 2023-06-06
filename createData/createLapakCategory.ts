@@ -1,6 +1,5 @@
 import { type Page } from "puppeteer"
 import * as dotenv from "dotenv"
-import { PendingXHR } from "pending-xhr-puppeteer"
 import sleep from "../utils/sleep"
 import { faker } from "@faker-js/faker"
 import writeErrorLog from "../utils/writeErrorLog"
@@ -9,10 +8,7 @@ dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/lapak_admin/kategori`
 
-export default async function createLapakCategory(
-  page: Page,
-  counter: number
-): Promise<void> {
+export default async function createLapakCategory(page: Page, counter: number) {
   let index = counter
   while (index) {
     try {

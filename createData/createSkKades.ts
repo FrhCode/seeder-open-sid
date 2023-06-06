@@ -1,20 +1,17 @@
-import { type Page } from 'puppeteer'
-import path from 'path'
-import fs from 'fs'
-import arrayElement from '../utils/arrayElement'
-import { faker } from '@faker-js/faker'
-import writeErrorLog from '../utils/writeErrorLog'
+import { type Page } from "puppeteer"
+import path from "path"
+import fs from "fs"
+import arrayElement from "../utils/arrayElement"
+import { faker } from "@faker-js/faker"
+import writeErrorLog from "../utils/writeErrorLog"
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from "dotenv" // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/dokumen_sekretariat/form/2`
 
-export default async function createSkKades(
-  page: Page,
-  count: number
-): Promise<void> {
-  const pdfFolder = path.join(process.cwd(), 'assets', 'pdf')
+export default async function createSkKades(page: Page, count: number) {
+  const pdfFolder = path.join(process.cwd(), "assets", "pdf")
 
   const listPdf = fs
     .readdirSync(pdfFolder)
@@ -33,16 +30,13 @@ export default async function createSkKades(
 
       await writeErrorLog(
         `Failed to create sk kades in index ${index + 1}\n${error.message}`,
-        'CREATE_SK_KADES'
+        "CREATE_SK_KADES"
       )
     }
   }
 }
 
-async function fillCreateSkKadesForm(
-  page: Page,
-  randomPdfPath: string
-): Promise<void> {
+async function fillCreateSkKadesForm(page: Page, randomPdfPath: string) {
   await page.goto(URL)
 
   // nama
@@ -55,13 +49,13 @@ async function fillCreateSkKadesForm(
 
   // tgl ditetapkan
   const date = faker.date.between({
-    from: '1990-01-01T00:00:00.000Z',
-    to: '2000-01-01T00:00:00.000Z'
+    from: "1990-01-01T00:00:00.000Z",
+    to: "2000-01-01T00:00:00.000Z"
   })
-  const formatedDate = `${date.getDate().toString().padStart(2, '0')}-${date
+  const formatedDate = `${date.getDate().toString().padStart(2, "0")}-${date
     .getMonth()
     .toString()
-    .padStart(2, '0')}-${date.getFullYear()}`
+    .padStart(2, "0")}-${date.getFullYear()}`
   await page.waitForSelector('input[name="attr[tgl_kep_kades]"]', {
     timeout: 500
   })
@@ -72,7 +66,7 @@ async function fillCreateSkKadesForm(
       'input[name="attr[tgl_kep_kades]"]'
     ) as HTMLInputElement
 
-    element.value = ''
+    element.value = ""
   })
 
   await page.type('input[name="attr[tgl_kep_kades]"]', formatedDate)
@@ -86,7 +80,7 @@ async function fillCreateSkKadesForm(
   // SUBMIT;
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Menu Baru"]', { timeout: 500 })

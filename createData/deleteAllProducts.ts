@@ -6,7 +6,7 @@ dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/lapak_admin/produk`
 
-export default async function deleteAllProducts(page: Page): Promise<void> {
+export default async function deleteAllProducts(page: Page) {
   // console.log("GOTO")
   await page.goto(URL)
   // console.log("BERES GOTO")

@@ -1,36 +1,32 @@
-import { faker } from '@faker-js/faker'
-import { type Page } from 'puppeteer'
-import { PendingXHR } from 'pending-xhr-puppeteer'
-import path from 'path'
-import fs from 'fs'
-import arrayElement from '../utils/arrayElement'
-import generateRandomArray from '../utils/generateRandomArray'
-import writeErrorLog from '../utils/writeErrorLog'
+import { faker } from "@faker-js/faker"
+import { type Page } from "puppeteer"
+import { PendingXHR } from "pending-xhr-puppeteer"
+import path from "path"
+import fs from "fs"
+import arrayElement from "../utils/arrayElement"
+import generateRandomArray from "../utils/generateRandomArray"
+import writeErrorLog from "../utils/writeErrorLog"
 
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from "dotenv" // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/admin_pembangunan`
 
 async function getUpdateProgressUrls(page: Page): Promise<string[]> {
   return await page.$$eval(
-    'a.btn.bg-purple.btn-flat.btn-sm',
+    "a.btn.bg-purple.btn-flat.btn-sm",
     (anchors: HTMLAnchorElement[]) => {
       return anchors.map((anchor) => anchor.href)
     }
   )
 }
 
-async function fillFormProgress(
-  page: Page,
-  url: string,
-  percentage: string
-): Promise<void> {
+async function fillFormProgress(page: Page, url: string, percentage: string) {
   await page.goto(url)
 
   await Promise.all([
     page.click('[title="Tambah Data Baru"]'),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   // click custom input percentage
@@ -45,7 +41,7 @@ async function fillFormProgress(
   })
   await page.type('input[name="persentase"]', percentage)
 
-  const articleFolder = path.join(process.cwd(), 'assets', 'article')
+  const articleFolder = path.join(process.cwd(), "assets", "article")
 
   const listImg = fs
     .readdirSync(articleFolder)
@@ -66,20 +62,18 @@ async function fillFormProgress(
 
   await Promise.all([
     page.click("button[type='submit']"),
-    page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 })
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 10000 })
   ])
 
   await page.waitForSelector('[title="Tambah Data Baru"]', { timeout: 500 })
 }
 
-export default async function createPembangunanProgress(
-  page: Page
-): Promise<void> {
+export default async function createPembangunanProgress(page: Page) {
   await page.goto(URL)
   const pendingXHR = new PendingXHR(page)
 
   await page.waitForSelector('select[name="tabel-pembangunan_length"]')
-  await page.select('select[name="tabel-pembangunan_length"]', '100')
+  await page.select('select[name="tabel-pembangunan_length"]', "100")
 
   await pendingXHR.waitForAllXhrFinished()
 
@@ -94,7 +88,7 @@ export default async function createPembangunanProgress(
         console.log({ url: updateUrl, target: randomNumber, index: index + 1 })
 
         await fillFormProgress(page, updateUrl, `${percentage}%`).catch(() => {
-          console.log('fail', { url: updateUrl, target: randomNumber })
+          console.log("fail", { url: updateUrl, target: randomNumber })
         })
       } catch (error) {
         if (!(error instanceof Error)) return
@@ -103,7 +97,7 @@ export default async function createPembangunanProgress(
           `Failed to create sk kades in ${updateUrl} index ${index + 1}\n${
             error.message
           }`,
-          'CREATE_PROGRESS_PEMBANGUNAN'
+          "CREATE_PROGRESS_PEMBANGUNAN"
         )
       }
     }

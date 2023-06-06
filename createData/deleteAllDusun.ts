@@ -1,16 +1,16 @@
-import { type Page } from 'puppeteer'
-import * as dotenv from 'dotenv'
+import { type Page } from "puppeteer"
+import * as dotenv from "dotenv"
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/sid_core`
 
-export default async function deleteAllDusun(page: Page): Promise<void> {
+export default async function deleteAllDusun(page: Page) {
   await page.goto(URL)
 
   await page.waitForSelector('[name="per_page"]', { timeout: 500 })
-  await page.select('[name="per_page"]', '100')
+  await page.select('[name="per_page"]', "100")
 
-  await page.waitForNavigation({ waitUntil: 'networkidle0' })
+  await page.waitForNavigation({ waitUntil: "networkidle0" })
 
   const deleteBtn = await page.$('[title="Hapus"]')
 

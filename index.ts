@@ -25,7 +25,7 @@ console.log({
   GALERY_COUNT
 })
 
-async function main(): Promise<void> {
+async function main() {
   const browser = await puppeteer.launch({
     // headless: false,
     headless: "new",
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
   // await deleteAllProducts(page)
 
   // await createLapakCategory(page, 5)
-  // await createLapakPelapak(page, 10)
+  await createLapakPelapak(page, 10)
   await createLapakProduct(page, 100)
 
   // console.log("FINISH")

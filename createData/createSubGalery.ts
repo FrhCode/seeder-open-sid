@@ -1,18 +1,18 @@
-import { type Page } from 'puppeteer'
+import { type Page } from "puppeteer"
 
-import * as dotenv from 'dotenv'
-import * as fs from 'fs'
-import * as path from 'path'
-import { faker } from '@faker-js/faker'
-import arrayElement from '../utils/arrayElement'
-import writeErrorLog from '../utils/writeErrorLog'
+import * as dotenv from "dotenv"
+import * as fs from "fs"
+import * as path from "path"
+import { faker } from "@faker-js/faker"
+import arrayElement from "../utils/arrayElement"
+import writeErrorLog from "../utils/writeErrorLog"
 dotenv.config()
 
 export default async function createSubGalery(
   page: Page,
   count: number = 100,
   URL: string
-): Promise<void> {
+) {
   for (let index = 0; index < count; index++) {
     console.log(`Creating Image ${index + 1} of ${count}`)
 
@@ -25,7 +25,7 @@ export default async function createSubGalery(
       await page.waitForSelector('[name="nama"]', { timeout: 2000 })
       await page.type('[name="nama"]', faker.lorem.text())
 
-      const articleFolder = path.join(process.cwd(), 'assets', 'article')
+      const articleFolder = path.join(process.cwd(), "assets", "article")
 
       const listImg = fs
         .readdirSync(articleFolder)
@@ -49,7 +49,7 @@ export default async function createSubGalery(
 
       await writeErrorLog(
         `Failed to create Sub Galery in index ${index + 1}\n${error.message}`,
-        'CREATE_SUB_GALERY'
+        "CREATE_SUB_GALERY"
       )
     }
   }

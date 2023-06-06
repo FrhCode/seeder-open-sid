@@ -1,20 +1,17 @@
-import { type Page } from 'puppeteer'
+import { type Page } from "puppeteer"
 
-import * as dotenv from 'dotenv'
-import writeErrorLog from '../utils/writeErrorLog'
-import * as fs from 'fs'
-import * as path from 'path'
-import { faker } from '@faker-js/faker'
-import arrayElement from '../utils/arrayElement'
-import createSubGalery from './createSubGalery'
+import * as dotenv from "dotenv"
+import writeErrorLog from "../utils/writeErrorLog"
+import * as fs from "fs"
+import * as path from "path"
+import { faker } from "@faker-js/faker"
+import arrayElement from "../utils/arrayElement"
+import createSubGalery from "./createSubGalery"
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/gallery`
 
-export default async function createGalery(
-  page: Page,
-  count: number
-): Promise<void> {
+export default async function createGalery(page: Page, count: number) {
   for (let index = 0; index < count; index++) {
     console.log(`Creating Image ${index + 1} of ${count}`)
 
@@ -27,7 +24,7 @@ export default async function createGalery(
       await page.waitForSelector('[name="nama"]')
       await page.type('[name="nama"]', faker.lorem.sentence())
 
-      const articleFolder = path.join(process.cwd(), 'assets', 'article')
+      const articleFolder = path.join(process.cwd(), "assets", "article")
 
       const listImg = fs
         .readdirSync(articleFolder)
@@ -51,13 +48,13 @@ export default async function createGalery(
 
       await writeErrorLog(
         `Failed to create Galery in index ${index + 1}\n${error.message}`,
-        'CREATE_GALERY'
+        "CREATE_GALERY"
       )
     }
   }
 
   await page.waitForSelector('[name="per_page"]')
-  await page.select('[name="per_page"]', '100')
+  await page.select('[name="per_page"]', "100")
 
   await page.waitForSelector('[title="Rincian Album"]')
   const subGaleryURLs = await page.$$eval('[title="Rincian Album"]', (el) => {
@@ -68,7 +65,7 @@ export default async function createGalery(
   for (const link of subGaleryURLs) {
     const randomNumber = faker.number.int({ min: 5, max: 10 })
     await createSubGalery(page, randomNumber, link).catch(() => {
-      console.log('UNEXPECTED ERROR')
+      console.log("UNEXPECTED ERROR")
     })
   }
 }

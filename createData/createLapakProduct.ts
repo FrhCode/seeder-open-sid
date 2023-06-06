@@ -8,14 +8,12 @@ import getFileFromDirectory from "../utils/getFileFromDirectory"
 import roundToNearest100 from "../utils/roundToNearest100"
 import calculateDifference from "../utils/calcDifferent"
 import writeErrorLog from "../utils/writeErrorLog"
+
 dotenv.config()
 
 const URL = `${process.env.APP_URL}/index.php/lapak_admin/produk`
 
-export default async function createLapakProduct(
-  page: Page,
-  counter: number
-): Promise<void> {
+export default async function createLapakProduct(page: Page, counter: number) {
   let index = counter
   while (index) {
     try {
