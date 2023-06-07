@@ -5,6 +5,8 @@ import createLapakProduct from "./createData/createLapakProduct";
 import createLapakPelapak from "./createData/createLapakPelapak";
 import createVaksin from "./createData/createVaksin";
 import createKelompok from "./createData/createKelompok";
+import createLembaga from "./createData/createLembaga";
+import createSuplement from "./createData/createSuplement";
 
 dotenv.config();
 
@@ -72,7 +74,9 @@ async function main() {
   // console.log("FINISH")
   // await createVaksin(page);
   // await
-  await createKelompok(page);
+  // await createKelompok(page);
+  // await createLembaga(page);
+  await createSuplement(page);
   await browser.close();
 }
 

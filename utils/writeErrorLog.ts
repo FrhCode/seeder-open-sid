@@ -17,7 +17,9 @@ type ErrorType =
   | "CREATE_LAPAK_CATEGORY"
   | "CREATE_LAPAK_PELAPAK"
   | "CREATE_VAKSIN"
-  | "CREATE_KELOMPOK";
+  | "CREATE_KELOMPOK"
+  | "CREATE_LEMBAGA"
+  | "CREATE_SUPLEMENT";
 
 export default function writeErrorLog(text: string, errorType: ErrorType) {
   const errorFileNames: Record<ErrorType, string> = {
@@ -37,6 +39,8 @@ export default function writeErrorLog(text: string, errorType: ErrorType) {
     CREATE_LAPAK_PELAPAK: "create_lapak_pelapak_error.txt",
     CREATE_VAKSIN: "create_vaksin_error.txt",
     CREATE_KELOMPOK: "create_kelompok_error.txt",
+    CREATE_LEMBAGA: "create_lembaga_error.txt",
+    CREATE_SUPLEMENT: "create_suplement_error.txt",
   };
 
   const folderName = path.join(process.cwd(), "log", "error");
