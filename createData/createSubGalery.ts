@@ -47,7 +47,7 @@ export default async function createSubGalery(
 
       index--;
 
-      await writeErrorLog(
+      writeErrorLog(
         `Failed to create Sub Galery in index ${index + 1}\n${error.message}`,
         "CREATE_SUB_GALERY"
       );

@@ -16,12 +16,10 @@ type ErrorType =
   | "CREATE_LAPAK_PRODUCT"
   | "CREATE_LAPAK_CATEGORY"
   | "CREATE_LAPAK_PELAPAK"
-  | "CREATE_VAKSIN";
+  | "CREATE_VAKSIN"
+  | "CREATE_KELOMPOK";
 
-export default async function writeErrorLog(
-  text: string,
-  errorType: ErrorType
-) {
+export default function writeErrorLog(text: string, errorType: ErrorType) {
   const errorFileNames: Record<ErrorType, string> = {
     CREATE_PENDUDUK: "create_penduduk_error.txt",
     CREATE_PENGATURAN_DESA: "create_pengaturan_desa_error.txt",
@@ -38,6 +36,7 @@ export default async function writeErrorLog(
     CREATE_LAPAK_CATEGORY: "create_lapak_category_error.txt",
     CREATE_LAPAK_PELAPAK: "create_lapak_pelapak_error.txt",
     CREATE_VAKSIN: "create_vaksin_error.txt",
+    CREATE_KELOMPOK: "create_kelompok_error.txt",
   };
 
   const folderName = path.join(process.cwd(), "log", "error");

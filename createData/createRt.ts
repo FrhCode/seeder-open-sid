@@ -33,7 +33,7 @@ export default async function createRt(page: Page, count: number, URL: string) {
 
       index--;
 
-      await writeErrorLog(
+      writeErrorLog(
         `Failed to create RT in index ${index + 1}\n${error.message}`,
         "CREATE_RT"
       );

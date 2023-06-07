@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import createLapakProduct from "./createData/createLapakProduct";
 import createLapakPelapak from "./createData/createLapakPelapak";
 import createVaksin from "./createData/createVaksin";
+import createKelompok from "./createData/createKelompok";
 
 dotenv.config();
 
@@ -25,9 +26,9 @@ console.log({
 
 async function main() {
   const browser = await puppeteer.launch({
-    headless: false,
-    // headless: "new",
-    devtools: true,
+    // headless: false,
+    headless: "new",
+    // devtools: true,
 
     defaultViewport: null,
     args: ["--start-maximized"],
@@ -69,8 +70,9 @@ async function main() {
   // await createLapakProduct(page, 100);
 
   // console.log("FINISH")
-  await createVaksin(page);
+  // await createVaksin(page);
   // await
+  await createKelompok(page);
   await browser.close();
 }
 

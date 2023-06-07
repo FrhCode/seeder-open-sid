@@ -1,5 +1,4 @@
 import * as dotenv from "dotenv";
-import sleep from "../utils/sleep";
 import { Page } from "puppeteer";
 import randomNumberBelow from "../utils/randomNumberBelow";
 import getFileFromDirectory from "../utils/getFileFromDirectory";
@@ -59,25 +58,25 @@ async function getUpdateURL(page: Page) {
     urls.push(...a);
   }
 
-  console.log(urls.length, urls[0]);
-
   return urls;
 }
 
 async function fillForm(page: Page) {
   await page.waitForSelector('[id="centang_vaksin_1"]');
 
-  await page.$eval('input[id="centang_vaksin_1"]', (input) => {
+  await page.$eval('input[id="centang_vaksin_3"]', (input) => {
     if (input.checked) {
       input.click();
     }
   });
+
   await page.$eval('input[id="centang_vaksin_2"]', (input) => {
     if (input.checked) {
       input.click();
     }
   });
-  await page.$eval('input[id="centang_vaksin_3"]', (input) => {
+
+  await page.$eval('input[id="centang_vaksin_1"]', (input) => {
     if (input.checked) {
       input.click();
     }
@@ -86,7 +85,9 @@ async function fillForm(page: Page) {
   // Vaksin 1
   const isAlreadyVaksin_1 = Math.random() < 0.8;
   if (isAlreadyVaksin_1) {
-    await page.click('input[id="centang_vaksin_1"]');
+    await page.$eval('input[id="centang_vaksin_1"]', (input) => {
+      input.click();
+    });
     await page.$eval(
       'input[name="tgl_vaksin_1"]',
       (input, date) => {
@@ -109,7 +110,9 @@ async function fillForm(page: Page) {
   // Vaksin 2
   const isAlreadyVaksin_2 = isAlreadyVaksin_1 && Math.random() < 0.7;
   if (isAlreadyVaksin_2) {
-    await page.click('input[id="centang_vaksin_2"]');
+    await page.$eval('input[id="centang_vaksin_2"]', (input) => {
+      input.click();
+    });
     await page.$eval(
       'input[name="tgl_vaksin_2"]',
       (input, date) => {
@@ -133,7 +136,10 @@ async function fillForm(page: Page) {
   const isAlreadyVaksin_3 =
     isAlreadyVaksin_1 && isAlreadyVaksin_2 && Math.random() < 0.4;
   if (isAlreadyVaksin_3) {
-    await page.click('input[id="centang_vaksin_3"]');
+    await page.$eval('input[id="centang_vaksin_3"]', (input) => {
+      input.click();
+    });
+
     await page.$eval(
       'input[name="tgl_vaksin_3"]',
       (input, date) => {
@@ -151,8 +157,8 @@ async function fillForm(page: Page) {
     await page
       .$('input[type="file"][id="file3"]')
       .then((element) => element?.uploadFile(getFileFromDirectory("article")));
-
-    await page.click('[type="submit"]');
-    await page.waitForSelector('[title="Tambah Data"]', { timeout: 5000 });
   }
+
+  await page.click('[type="submit"]');
+  await page.waitForSelector('[title="Tambah Data"]', { timeout: 5000 });
 }

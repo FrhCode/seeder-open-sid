@@ -19,7 +19,7 @@ export default async function createDusun(page: Page, count: number) {
       if (!(error instanceof Error)) return;
       index--;
 
-      await writeErrorLog(
+      writeErrorLog(
         `Failed to create dusun in index ${index + 1}\n${error.message}`,
         "CREATE_DUSUN"
       );
