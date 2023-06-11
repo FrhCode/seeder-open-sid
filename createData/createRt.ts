@@ -19,9 +19,8 @@ export default async function createRt(page: Page, count: number, URL: string) {
         return tds.map((td) => td.innerHTML);
       })
       .then((value) => value.map((a) => parseInt(a)));
-  } catch (error) {
-    console.log("HI");
-  }
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
 
   for (let index = 0; index < count; index++) {
     try {

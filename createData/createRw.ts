@@ -21,7 +21,9 @@ export default async function createRw(page: Page, count: number, URL: string) {
         return tds.map((td) => td.innerHTML);
       })
       .then((value) => value.map((a) => parseInt(a)));
-  } catch (error) {}
+  } catch (error) {
+    console.log("RW NEVER");
+  }
 
   for (let index = 0; index < count; index++) {
     try {
@@ -47,7 +49,7 @@ export default async function createRw(page: Page, count: number, URL: string) {
     }
   );
 
-  const randomNumber = faker.number.int({ min: 5, max: 9 });
+  const randomNumber = faker.number.int({ min: 1, max: 3 });
   for (const url of createRtUrls) {
     await createRt(page, randomNumber, url);
   }

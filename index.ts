@@ -1,12 +1,8 @@
 import puppeteer from "puppeteer";
 import login from "./login";
 import * as dotenv from "dotenv";
-import createLapakProduct from "./createData/createLapakProduct";
-import createLapakPelapak from "./createData/createLapakPelapak";
-import createVaksin from "./createData/createVaksin";
-import createKelompok from "./createData/createKelompok";
-import createLembaga from "./createData/createLembaga";
-import createSuplement from "./createData/createSuplement";
+import createPenduduk from "./createData/createPenduduk";
+import createDusun from "./createData/createDusun";
 
 dotenv.config();
 
@@ -41,8 +37,8 @@ async function main() {
   await login(page);
 
   // await deleteAllDusun(page)
-  // await createDusun(page, DUSUN_COUNT)
-  // await createPenduduk(page, PENDUDUK_COUNT)
+  // await createDusun(page, DUSUN_COUNT);
+  await createPenduduk(page, PENDUDUK_COUNT);
   // await createPengaturanDesa(page, PENGATURAN_DESA_COUNT)
   // await createSkKades(page, SK_KADES_COUNT)
   // await createPembangunan(page, PEMBANGUNAN_COUNT)
@@ -76,7 +72,7 @@ async function main() {
   // await
   // await createKelompok(page);
   // await createLembaga(page);
-  await createSuplement(page);
+  // await createSuplement(page);
   await browser.close();
 }
 

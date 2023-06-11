@@ -27,7 +27,7 @@ export default async function createPenduduk(page: Page, count: number) {
 
     try {
       await fillPendudukForm(page, randomPdfPath);
-    } catch (error: any) {
+    } catch (error) {
       if (!(error instanceof Error)) return;
 
       index--;
