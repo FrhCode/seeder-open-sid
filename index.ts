@@ -15,7 +15,6 @@ import createKelompok from "./createData/createKelompok";
 import createLembaga from "./createData/createLembaga";
 import createSuplement from "./createData/createSuplement";
 import createGalery from "./createData/createGalery";
-import deleteAllDusun from "./createData/deleteAllDusun";
 
 dotenv.config();
 
@@ -40,7 +39,6 @@ async function main() {
 
   await login(page);
 
-  await deleteAllDusun(page);
   await createDusun(page, DUSUN_COUNT);
   await createPenduduk(page, PENDUDUK_COUNT);
   await createPengaturanDesa(page, PENGATURAN_DESA_COUNT);

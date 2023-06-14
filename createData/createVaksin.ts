@@ -148,7 +148,9 @@ async function fillForm(page: Page) {
       getRandomDate(new Date("2022-01-01"), new Date("2022-05-01"))
     );
     await page.click('[id="select2-jenis_vaksin_3-container"]');
-    await page.waitForSelector('[id="select2-jenis_vaksin_3-results"] li');
+    await page.waitForSelector('[id="select2-jenis_vaksin_3-results"] li', {
+      timeout: 2000,
+    });
     const [...optionsVaksin3] = await page.$$(
       '[id="select2-jenis_vaksin_3-results"] li'
     );

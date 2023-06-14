@@ -55,7 +55,7 @@ async function fillForm(page: Page) {
   await page.type('[id="telepon"]', phonePelapak);
   await page.click('[type="submit"]');
 
-  await page.waitForSelector('[data-title="Tambah Data"]');
+  await page.waitForSelector('[data-title="Tambah Data"]', { timeout: 2000 });
 
   await page.select('[name="tabel-pelapak_length"]', "100");
 
@@ -120,5 +120,5 @@ async function fillForm(page: Page) {
 
   await page.click('[type="submit"]');
 
-  await page.waitForSelector('[data-title="Tambah Data"]');
+  await page.waitForSelector('[data-title="Tambah Data"]', { timeout: 2000 });
 }
