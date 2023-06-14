@@ -27,7 +27,9 @@ export default async function createLembaga(page: Page) {
 async function fillForm(page: Page) {
   await page.goto(URL);
 
-  await page.waitForSelector('[id="select2-id_penduduk-container"]');
+  await page.waitForSelector('[id="select2-id_penduduk-container"]', {
+    timeout: 2000,
+  });
 
   await page.click('[id="select2-id_penduduk-container"]');
   await page.waitForSelector('[class="select2-results"] ul li');
@@ -41,5 +43,7 @@ async function fillForm(page: Page) {
   await optionRole[optionRole.length - 1].click();
 
   await page.click("button[type='submit']");
-  await page.waitForSelector('[id="select2-id_penduduk-container"]');
+  await page.waitForSelector('[id="select2-id_penduduk-container"]', {
+    timeout: 3000,
+  });
 }
