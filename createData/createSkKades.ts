@@ -1,25 +1,17 @@
 import { type Page } from "puppeteer";
-import path from "path";
-import fs from "fs";
-import arrayElement from "../utils/arrayElement";
 import { faker } from "@faker-js/faker";
 import writeErrorLog from "../utils/writeErrorLog";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/dokumen_sekretariat/form/2`;
 
 export default async function createSkKades(page: Page, count: number) {
-  const pdfFolder = path.join(process.cwd(), "assets", "pdf");
-
-  const listPdf = fs
-    .readdirSync(pdfFolder)
-    .filter((file) => file.match(/.*.pdf$/gi));
-
   for (let index = 0; index < count; index++) {
     console.log(`Creating SK Kades ${index + 1} of ${count}`);
-    const randomPdfPath = path.join(pdfFolder, arrayElement(listPdf));
+    const randomPdfPath = getFileFromDirectory("pdf");
 
     try {
       await fillCreateSkKadesForm(page, randomPdfPath);
@@ -41,7 +33,13 @@ async function fillCreateSkKadesForm(page: Page, randomPdfPath: string) {
 
   // nama
   await page.waitForSelector('input[name="nama"]', { timeout: 500 });
-  await page.type('input[name="nama"]', faker.lorem.words());
+  await page.$eval(
+    'input[name="nama"]',
+    (e, text) => {
+      e.value = text;
+    },
+    faker.lorem.words()
+  );
 
   // upload document
   const elementHandle = await page.$('input[name="satuan"][type="file"]');
@@ -75,7 +73,13 @@ async function fillCreateSkKadesForm(page: Page, randomPdfPath: string) {
   await page.waitForSelector('textarea[name="attr[keterangan]"]', {
     timeout: 500,
   });
-  await page.type('textarea[name="attr[keterangan]"]', faker.lorem.words());
+  await page.$eval(
+    'textarea[name="attr[keterangan]"]',
+    (e, text) => {
+      e.value = text;
+    },
+    faker.lorem.words()
+  );
 
   // SUBMIT;
   await Promise.all([

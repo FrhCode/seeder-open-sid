@@ -2,11 +2,9 @@ import { type Page } from "puppeteer";
 
 import * as dotenv from "dotenv";
 import writeErrorLog from "../utils/writeErrorLog";
-import * as fs from "fs";
-import * as path from "path";
 import { faker } from "@faker-js/faker";
-import arrayElement from "../utils/arrayElement";
 import createSubGalery from "./createSubGalery";
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/gallery`;
@@ -22,15 +20,17 @@ export default async function createGalery(page: Page, count: number) {
       await page.click('[title="Tambah Artikel"]');
 
       await page.waitForSelector('[name="nama"]');
-      await page.type('[name="nama"]', faker.lorem.sentence());
+      const text = faker.lorem.sentence({ max: 5, min: 3 });
+      await page.$eval(
+        'input[name="nama"]',
+        (e, text) => {
+          const input = e as HTMLInputElement;
+          input.value = text;
+        },
+        text
+      );
 
-      const articleFolder = path.join(process.cwd(), "assets", "article");
-
-      const listImg = fs
-        .readdirSync(articleFolder)
-        .filter((file) => file.match(/.(jpe?g|png)$/gi));
-
-      const randomImgPath = path.join(articleFolder, arrayElement(listImg));
+      const randomImgPath = getFileFromDirectory("article");
 
       await page.waitForSelector('input[type="file"]');
       const fileInput = await page.$('input[type="file"]');

@@ -1,13 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { type Page } from "puppeteer";
 import { PendingXHR } from "pending-xhr-puppeteer";
-import path from "path";
-import fs from "fs";
-import arrayElement from "../utils/arrayElement";
 import writeErrorLog from "../utils/writeErrorLog";
 import createPembangunanProgress from "./createPembangunanProgress";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/admin_pembangunan/form`;
@@ -38,7 +36,14 @@ async function fillPembangunanForm(page: Page) {
 
   // judul
   await page.waitForSelector('input[name="judul"]', { timeout: 500 });
-  await page.type('input[name="judul"]', faker.lorem.text());
+  await page.$eval(
+    'input[name="judul"]',
+    (e, text) => {
+      const element = e as HTMLInputElement;
+      element.value = text;
+    },
+    faker.lorem.text()
+  );
 
   // PELAKSANA
   await page.waitForSelector('input[name="pelaksana_kegiatan"]', {
@@ -101,7 +106,14 @@ async function fillPembangunanForm(page: Page) {
 
   // MANFAAT
   await page.waitForSelector('textarea[name="manfaat"]', { timeout: 500 });
-  await page.type('textarea[name="manfaat"]', faker.lorem.sentence());
+
+  await page.$eval(
+    'textarea[name="manfaat"]',
+    (e, text) => {
+      e.value = text;
+    },
+    faker.lorem.sentence()
+  );
 
   // KETERANGAN
   await page.waitForSelector('textarea[name="keterangan"]', { timeout: 500 });
@@ -162,13 +174,7 @@ async function fillPembangunanForm(page: Page) {
   });
   await options[randomNumber].click();
 
-  const articleFolder = path.join(process.cwd(), "assets", "article");
-
-  const listImg = fs
-    .readdirSync(articleFolder)
-    .filter((file) => file.match(/.(jpe?g|png)$/gi));
-
-  const randomImgPath = path.join(articleFolder, arrayElement(listImg));
+  const randomImgPath = getFileFromDirectory("article");
 
   // FOTO
   // upload document

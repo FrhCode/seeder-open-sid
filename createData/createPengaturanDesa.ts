@@ -1,29 +1,21 @@
 import { type Page } from "puppeteer";
-import fs from "fs";
-import path from "path";
-import arrayElement from "../utils/arrayElement";
 import { faker } from "@faker-js/faker";
 import writeErrorLog from "../utils/writeErrorLog";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/dokumen_sekretariat/form/3`;
 
 export default async function createPengaturanDesa(page: Page, count: number) {
-  const pdfFolder = path.join(process.cwd(), "assets", "pdf");
-
-  const listPdf = fs
-    .readdirSync(pdfFolder)
-    .filter((file) => file.match(/.*.pdf$/gi));
-
   for (let index = 0; index < count; index++) {
     console.log(`Creating Pengatura Desa ${index + 1} of ${count}`);
-    const randomPdfPath = path.join(pdfFolder, arrayElement(listPdf));
+    const randomPdfPath = getFileFromDirectory("pdf");
 
     try {
       await fillCreatePengaturanDesa(page, randomPdfPath);
-    } catch (error: any) {
+    } catch (error) {
       if (!(error instanceof Error)) return;
 
       index--;

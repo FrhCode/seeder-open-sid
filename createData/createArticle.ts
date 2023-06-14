@@ -1,12 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { type Page } from "puppeteer";
 import sleep from "../utils/sleep";
-import path from "path";
-import fs from "fs";
-import arrayElement from "../utils/arrayElement";
 import writeErrorLog from "../utils/writeErrorLog";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import createArticleCategory from "./createArticleCategory";
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/web`;
@@ -48,15 +47,16 @@ async function generateArticle(page: Page, link: string) {
       );
 
       await page.waitForSelector('input[name="judul"]', { timeout: 2000 });
-      await page.type('input[name="judul"]', faker.lorem.text());
+      await page.$eval(
+        'input[name="judul"]',
+        (e, text) => {
+          const element = e as HTMLInputElement;
+          element.value = text;
+        },
+        faker.lorem.text()
+      );
 
-      const articleFolder = path.join(process.cwd(), "assets", "person");
-
-      const listImg = fs
-        .readdirSync(articleFolder)
-        .filter((file) => file.match(/.(jpe?g|png)$/gi));
-
-      const randomImgPath = path.join(articleFolder, arrayElement(listImg));
+      const randomImgPath = getFileFromDirectory("person");
 
       // FOTO
       // upload document
@@ -117,10 +117,10 @@ async function generateArticle(page: Page, link: string) {
 }
 
 export default async function createArticle(page: Page) {
+  await createArticleCategory(page);
   await page.goto(URL);
 
   const links = await getArticleCreateLink(page);
-  console.log(links);
 
   // await generateArticle(page, links[0]);
 

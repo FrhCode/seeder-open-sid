@@ -1,29 +1,21 @@
 import generateNik from "../utils/generateNik";
-import path from "path";
-import fs from "fs";
 import { faker } from "@faker-js/faker";
 import { type Page } from "puppeteer";
 
 import { PendingXHR } from "pending-xhr-puppeteer";
-import arrayElement from "../utils/arrayElement";
 import sleep from "../utils/sleep";
 import writeErrorLog from "../utils/writeErrorLog";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/penduduk/form_peristiwa/5`;
 
 export default async function createPenduduk(page: Page, count: number) {
-  const personFolder = path.join(process.cwd(), "assets", "person");
-
-  const listImg = fs
-    .readdirSync(personFolder)
-    .filter((file) => file.match(/.(jpe?g|png)$/gi));
-
   for (let index = 0; index < count; index++) {
     console.log(`Creating User ${index + 1} of ${count}`);
-    const randomPdfPath = path.join(personFolder, arrayElement(listImg));
+    const randomPdfPath = getFileFromDirectory("pdf");
 
     try {
       await fillPendudukForm(page, randomPdfPath);

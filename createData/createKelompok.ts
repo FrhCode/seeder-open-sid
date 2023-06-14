@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
 import { Page } from "puppeteer";
 import randomNumberBelow from "../utils/randomNumberBelow";
-import sleep from "../utils/sleep";
 import writeErrorLog from "../utils/writeErrorLog";
 
 dotenv.config();

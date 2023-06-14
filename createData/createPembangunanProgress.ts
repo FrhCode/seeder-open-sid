@@ -1,13 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { type Page } from "puppeteer";
 import { PendingXHR } from "pending-xhr-puppeteer";
-import path from "path";
-import fs from "fs";
-import arrayElement from "../utils/arrayElement";
 import generateRandomArray from "../utils/generateRandomArray";
 import writeErrorLog from "../utils/writeErrorLog";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import getFileFromDirectory from "../utils/getFileFromDirectory";
 dotenv.config();
 
 const URL = `${process.env.APP_URL}/index.php/admin_pembangunan`;
@@ -41,13 +39,7 @@ async function fillFormProgress(page: Page, url: string, percentage: string) {
   });
   await page.type('input[name="persentase"]', percentage);
 
-  const articleFolder = path.join(process.cwd(), "assets", "article");
-
-  const listImg = fs
-    .readdirSync(articleFolder)
-    .filter((file) => file.match(/.(jpe?g|png)$/gi));
-
-  const randomImgPath = path.join(articleFolder, arrayElement(listImg));
+  const randomImgPath = getFileFromDirectory("article");
 
   // FOTO
   // upload document
@@ -58,7 +50,14 @@ async function fillFormProgress(page: Page, url: string, percentage: string) {
   await page.waitForSelector('textarea[name="keterangan"]', {
     timeout: 500,
   });
-  await page.type('textarea[name="keterangan"]', faker.lorem.paragraph());
+
+  await page.$eval(
+    'textarea[name="keterangan"]',
+    (e, text) => {
+      e.value = text;
+    },
+    faker.lorem.paragraph()
+  );
 
   await Promise.all([
     page.click("button[type='submit']"),
