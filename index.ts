@@ -27,8 +27,8 @@ const GALERY_COUNT = 25;
 
 async function main() {
   const browser = await puppeteer.launch({
-    // headless: false,
-    headless: "new",
+    headless: false,
+    // headless: "new",
     // devtools: true,
 
     defaultViewport: null,
@@ -39,7 +39,7 @@ async function main() {
 
   await login(page);
 
-  await createDusun(page, DUSUN_COUNT);
+  // await createDusun(page, DUSUN_COUNT);
   await createPenduduk(page, PENDUDUK_COUNT);
   await createPengaturanDesa(page, PENGATURAN_DESA_COUNT);
   await createSkKades(page, SK_KADES_COUNT);
